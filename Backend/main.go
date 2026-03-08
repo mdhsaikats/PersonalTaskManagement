@@ -22,7 +22,7 @@ func main() {
     r.Get("/", handler.ServerHealth)
 	r.Post("/login", handler.LoginUsers)
 	r.Post("/registration",handler.RegistrationUser)
-
+	r.Post("/logout",handler.LogoutUsers)
 
 	//server listening
     err := http.ListenAndServe(":3000", r)

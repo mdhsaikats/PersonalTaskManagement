@@ -2,10 +2,12 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"main.go/database"
 	"main.go/model"
+	"main.go/util"
 )
 
 
@@ -58,7 +60,68 @@ func LoginUsers(w http.ResponseWriter, r *http.Request ){
 		return
 	}
 
+	token, err := util.CreateToken(userlogin.Email)
+	if err != nil {
+    	fmt.Println("Error creating the token")
+    	return
+	}
+
+	var userID int
+	query2 := `SELECT id FROM users WHERE email = ?`
+	err = database.DB.QueryRow(query2,userlogin.Email).Scan(&userID)
+	if err != nil{
+		http.Error(w, `"massage": "Invalid to get the user_id"`, http.StatusInternalServerError)
+		return
+	} 
+	
+	query1 := `INSERT INTO session (token,user_id) VALUES (?,?)`
+	_,err = database.DB.Exec(query1,token,userID)
+	if err != nil {
+		http.Error(w,"Invalid to enter the session and the user id to the session table",http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"message": "Login successful"}`))
+	json.NewEncoder(w).Encode(map[string]string{
+		"status": "success",
+		"message": "login successfully",
+		"token": token,
+	})
+	
+}
+
+func LogoutUsers(w http.ResponseWriter,r *http.Request){
+	if r.Method != http.MethodPost{
+		http.Error(w,"Invalid method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	AuthHeader := util.GetTokenFromHeader(r)
+
+	if AuthHeader == ""{
+		http.Error(w,"Token missing",http.StatusUnauthorized)
+		return
+	}
+
+	email, err := util.ParseToken(AuthHeader)
+	if err != nil {
+		http.Error(w, "Invalid token", http.StatusUnauthorized)
+		return
+	}
+	var userID int
+	query := `SELECT id FROM users WHERE email = ?`
+	err = database.DB.QueryRow(query,email).Scan(&userID)
+	if err != nil{
+		http.Error(w, `"massage": "Invalid to get the user_id"`, http.StatusInternalServerError)
+		return
+	} 
+	query1 := `DELETE from session WHERE user_id = ?`
+	_,err = database.DB.Exec(query1,userID)
+	if err != nil {
+		http.Error(w,"Invalid to delete the session", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(`{"message":"Logout successful"}`))
+
 }
