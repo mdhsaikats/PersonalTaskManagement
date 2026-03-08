@@ -6,16 +6,29 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"main.go/database"
+	"main.go/handler"
 )
 
 func main() {
+	//database connection
+	db := database.Database()
+	defer db.Close()
+
+
+	//api routers
     r := chi.NewRouter()
     r.Use(middleware.Logger)
-    r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-        w.Write([]byte("Hello World!"))
-    })
+    r.Get("/", handler.ServerHealth)
+	r.Post("/login", handler.LoginUsers)
+	r.Post("/registration",handler.RegistrationUser)
+
+
+	//server listening
     err := http.ListenAndServe(":3000", r)
 	if err != nil {
 		fmt.Println("Server crushed")
+	}else{
+		fmt.Println("Server Started")
 	}
 }
