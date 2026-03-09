@@ -22,9 +22,17 @@ if err := json.NewDecoder(r.Body).Decode(&userregistration); err != nil {
 	return
 }
 
+var existingEmail string
+query1 := `SELECT email FROM users WHERE email = ?`
+err := database.DB.QueryRow(query1, userregistration.Email).Scan(&existingEmail)
+if err == nil {
+	http.Error(w, `{"message": "Email already exists"}`, http.StatusConflict)
+	return
+}
+
 query := `INSERT INTO users (email,password) VALUES (?,?)`
 
-_,err := database.DB.Exec(query, userregistration.Email, userregistration.Password)
+_, err = database.DB.Exec(query, userregistration.Email, userregistration.Password)
 if err != nil{
 	http.Error(w,"Invalid To Access database",http.StatusInternalServerError)
 	return

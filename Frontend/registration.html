@@ -12,12 +12,7 @@
         <h1 class="text-2xl font-bold text-center mb-4">Registration Page</h1>
         <div class="border-b border-black mb-6"></div>
 
-        <form
-          action="/submit"
-          method="post"
-          class="flex flex-col"
-          id="registration"
-        >
+        <form class="flex flex-col" id="registration">
           <!-- Email -->
           <label for="email" class="mb-2 font-medium">Email</label>
           <input
@@ -39,14 +34,14 @@
             class="border border-black rounded px-3 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
-          <label for="password" class="mb-2 font-medium"
+          <label for="confirmPassword" class="mb-2 font-medium"
             >Confirm Password</label
           >
           <input
             type="password"
-            name="password"
-            id="password"
-            placeholder="Enter your password"
+            name="confirmPassword"
+            id="confirmPassword"
+            placeholder="Confirm your password"
             class="border border-black rounded px-3 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
@@ -69,6 +64,10 @@
         </form>
       </div>
     </div>
-    <script src="js/registration.js"></script>
+    <div
+      id="toast-container"
+      class="fixed top-5 right-5 flex flex-col gap-3 z-50"
+    ></div>
+    <script type="module" src="js/registration.js"></script>
   </body>
 </html>
