@@ -21,6 +21,7 @@ document.getElementById("login").addEventListener("submit", function (e) {
     .then((data) => {
       showToast("Login successful!", "success");
       setTimeout(() => {
+        localStorage.setItem("token", data.token)
         window.location.href = "dashboard.html";
       }, 1500);
     })
