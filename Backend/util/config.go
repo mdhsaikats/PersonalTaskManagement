@@ -42,6 +42,25 @@ func VerifyToken(tokenString string) error {
    return nil
 }
 
+func VerifyTokenMiddleware() func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			tokenString := GetTokenFromHeader(r)
+			if tokenString == "" {
+				http.Error(w, "missing or invalid authorization header", http.StatusUnauthorized)
+				return
+			}
+
+			if err := VerifyToken(tokenString); err != nil {
+				http.Error(w, "unauthorized", http.StatusUnauthorized)
+				return
+			}
+
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
 func ParseToken(tokenString string) (string, error) {
     token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
         return secretKey, nil

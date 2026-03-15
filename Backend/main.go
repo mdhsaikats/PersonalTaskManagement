@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/cors"
 	"main.go/database"
 	"main.go/handler"
+	"main.go/util"
 )
 
 func main() {
@@ -36,6 +37,11 @@ func main() {
 	r.Post("/login", handler.LoginUsers)
 	r.Post("/registration",handler.RegistrationUser)
 	r.Post("/logout",handler.LogoutUsers)
+	r.Route("/dashboard", func(r chi.Router) {
+		r.Use(util.VerifyTokenMiddleware())
+		r.Get("/header",handler.DashboardHeader)
+		
+    })
 
 	//server listening
     err := http.ListenAndServe(":3000", r)
