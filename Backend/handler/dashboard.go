@@ -13,4 +13,5 @@ func main(w http.ResponseWriter, r *http.Request){
 	}
 
 	var dh model.DashboardHeader
+	query := `SELECT COUNT()`
 }
