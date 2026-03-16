@@ -94,7 +94,77 @@ async function TodaysTask(){
     }
 }
 
+async function ProgressStatus() {
+
+    const token = localStorage.getItem("token");
+
+    if (!token){
+        window.location.href = "index.html";
+        return;
+    }
+
+    const ProjectProgress = document.getElementById("projectprogress");
+
+    if (!ProjectProgress){
+        return;
+    }
+
+    try{
+
+        const response = await fetch(BASE_URL + "/dashboard/project-status",{
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + token,
+            },
+        });
+
+        if(!response.ok){
+            console.error("Invalid response",response.status);
+            ProjectProgress.innerHTML = "<p>No Progress</p>";
+            return;
+        }
+
+        const data = await response.json();
+
+        const projects = data.projects || [];
+
+        let html = "";
+
+        projects.forEach(project => {
+
+            const title = project.project_title;
+            const progress = parseFloat(project.progress_status);
+
+            html += `
+            <div class="bg-white p-4 rounded-lg shadow mb-4">
+
+                <div class="flex justify-between mb-2">
+                    <span class="font-medium">${title}</span>
+                    <span class="text-sm text-gray-500">${progress}%</span>
+                </div>
+
+                <div class="w-full bg-gray-200 rounded-full h-4">
+
+                    <div class="bg-blue-500 h-4 rounded-full transition-all duration-500"
+                        style="width:${progress}%">
+                    </div>
+
+                </div>
+
+            </div>
+            `;
+        });
+
+        ProjectProgress.innerHTML = html;
+
+    }catch(error){
+        console.error(error);
+        ProjectProgress.innerHTML = "<p>Error loading progress</p>";
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     DashboardHeader();
     TodaysTask();
+    ProgressStatus();
 });
