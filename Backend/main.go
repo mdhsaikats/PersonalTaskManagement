@@ -40,6 +40,7 @@ func main() {
 	r.Route("/dashboard", func(r chi.Router) {
 		r.Use(util.VerifyTokenMiddleware())
 		r.Get("/header",handler.DashboardHeader)
+		r.Get("/todaystask",handler.TodaysTasks)
 		
     })
 

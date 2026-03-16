@@ -282,7 +282,10 @@
                   </div>
                   <div>
                     <p class="text-sm text-gray-500">Total Tasks</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-1">128</p>
+                    <div class="relative h-8 w-20 mt-1">
+                      <span id="total_task_skeleton" class="absolute left-0 top-1 h-6 w-16 rounded-md bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse"></span>
+                      <span id="total_task" class="text-3xl font-bold text-gray-900 opacity-0 transition-opacity duration-300">0</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -321,7 +324,10 @@
                   </div>
                   <div>
                     <p class="text-sm text-gray-500">In Progress</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-1">12</p>
+                    <div class="relative h-8 w-20 mt-1">
+                      <span id="in_progress_task_skeleton" class="absolute left-0 top-1 h-6 w-16 rounded-md bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse"></span>
+                      <span id="in_progress_task" class="text-3xl font-bold text-gray-900 opacity-0 transition-opacity duration-300">0</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -360,7 +366,10 @@
                   </div>
                   <div>
                     <p class="text-sm text-gray-500">Completed</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-1">84</p>
+                    <div class="relative h-8 w-20 mt-1">
+                      <span id="completed_task_skeleton" class="absolute left-0 top-1 h-6 w-16 rounded-md bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse"></span>
+                      <span id="completed_task" class="text-3xl font-bold text-gray-900 opacity-0 transition-opacity duration-300">0</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -562,31 +571,8 @@
                   </div>
                   <h2 class="text-lg font-bold text-gray-900">Todays Tasks</h2>
                 </div>
-                <div class="px-6 py-4 space-y-4">
-                  <!-- Upcoming 1 -->
-                  <div class="flex items-start gap-3">
-                    <span
-                      class="mt-1.5 w-2.5 h-2.5 rounded-full bg-red-500 shrink-0"
-                    ></span>
-                    <div>
-                      <p class="text-sm font-medium text-gray-900">
-                        Client Presentation
-                      </p>
-                    </div>
-                  </div>
-                  <!-- Upcoming 2 -->
-                  <div class="flex items-start gap-3">
-                    <span
-                      class="mt-1.5 w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0"
-                    ></span>
-                    <div>
-                      <p class="text-sm font-medium text-gray-900">
-                        API Documentation
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                <div id="todaystask"></div>
+               </div>
 
               <!-- Project Progress -->
               <div
@@ -639,5 +625,6 @@
         </main>
       </div>
     </div>
+    <script type="module" src="js/dashboard.js"></script>
   </body>
 </html>
