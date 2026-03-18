@@ -41,6 +41,7 @@ func main() {
 		r.Get("/header", handler.DashboardHeader)
 		r.Get("/todaystask", handler.TodaysTasks)
 		r.Get("/project-status", handler.ProjectProgress)
+		r.Get("/upcoming", handler.UpcomingDeadlines)
 	})
 
 	//server listening

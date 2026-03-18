@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var secretKey = []byte("saikat29112003")
@@ -27,19 +28,19 @@ func CreateToken(username string) (string, error) {
 }
 
 func VerifyToken(tokenString string) error {
-   token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-      return secretKey, nil
-   })
-  
-   if err != nil {
-      return err
-   }
-  
-   if !token.Valid {
-      return fmt.Errorf("invalid token")
-   }
-  
-   return nil
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return secretKey, nil
+	})
+
+	if err != nil {
+		return err
+	}
+
+	if !token.Valid {
+		return fmt.Errorf("invalid token")
+	}
+
+	return nil
 }
 
 func VerifyTokenMiddleware() func(http.Handler) http.Handler {
@@ -62,20 +63,20 @@ func VerifyTokenMiddleware() func(http.Handler) http.Handler {
 }
 
 func ParseToken(tokenString string) (string, error) {
-    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-        return secretKey, nil
-    })
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return secretKey, nil
+	})
 
-    if err != nil {
-        return "", err
-    }
+	if err != nil {
+		return "", err
+	}
 
-    if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-        email := claims["username"].(string)
-        return email, nil
-    }
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		email := claims["username"].(string)
+		return email, nil
+	}
 
-    return "", fmt.Errorf("invalid token")
+	return "", fmt.Errorf("invalid token")
 }
 
 func GetTokenFromHeader(r *http.Request) string {
@@ -95,3 +96,14 @@ func GetTokenFromHeader(r *http.Request) string {
 
 	return parts[1]
 }
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
+}
+
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}
+

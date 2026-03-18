@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"main.go/database"
 	"main.go/model"
@@ -186,4 +188,92 @@ func ProjectProgress(w http.ResponseWriter, r *http.Request) {
 		"status":   "success",
 		"projects": projects,
 	})
+}
+
+func DeterminePriority(dueDate time.Time) string {
+	now := time.Now()
+
+	dueYear, dueMonth, dueDay := dueDate.Date()
+	nowYear, nowMonth, nowDay := now.Date()
+	tomYear, tomMonth, tomDay := now.AddDate(0, 0, 1).Date()
+
+	if dueYear == tomYear && dueMonth == tomMonth && dueDay == tomDay {
+		return "high"
+	} else if dueYear == nowYear && dueMonth == nowMonth && dueDay == nowDay {
+		return "critical"
+	} else if dueDate.Before(now) {
+		return "overdue"
+	}
+	return "normal"
+}
+
+func UpcomingDeadlines(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+	var userID int
+
+	token := util.GetTokenFromHeader(r)
+	if token == "" {
+		http.Error(w, "missing token", http.StatusUnauthorized)
+		return
+	}
+
+	email, err := util.ParseToken(token)
+	if err != nil {
+		http.Error(w, "invalid token", http.StatusUnauthorized)
+		return
+	}
+
+	err = database.DB.QueryRow(`SELECT id FROM users WHERE email = ?`, email).Scan(&userID)
+	if err != nil {
+		http.Error(w, "user not found", http.StatusUnauthorized)
+		return
+	}
+	var upcoming []model.UpcomingDeadlines
+	query := `SELECT t.title, t.due_date 
+			FROM task t
+			JOIN project p ON t.project_id = p.id
+			WHERE t.due_date > CURRENT_DATE AND p.user_id = ?;`
+	rows, err := database.DB.Query(query, userID)
+	if err != nil {
+		http.Error(w, "Error to query for the upcoming deadline", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var ud model.UpcomingDeadlines
+		var dueRaw sql.NullString
+		err = rows.Scan(&ud.Title, &dueRaw)
+		if err != nil {
+			http.Error(w, "Scan error", http.StatusInternalServerError)
+			return
+		}
+
+		if dueRaw.Valid {
+			// Try common datetime layouts; fallback marks as invalid
+			parsed, parseErr := time.Parse("2006-01-02 15:04:05", dueRaw.String)
+			if parseErr != nil {
+				parsed, parseErr = time.Parse(time.RFC3339, dueRaw.String)
+			}
+			if parseErr == nil {
+				ud.DueDate = &parsed
+				ud.Priority = DeterminePriority(parsed)
+			} else {
+				ud.Priority = "invalid_date"
+			}
+		} else {
+			ud.Priority = "unscheduled"
+		}
+		upcoming = append(upcoming, ud)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status":   "success",
+		"upcoming": upcoming,
+	})
+
 }
