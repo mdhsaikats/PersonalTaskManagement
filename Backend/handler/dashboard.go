@@ -253,7 +253,6 @@ func UpcomingDeadlines(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if dueRaw.Valid {
-			// Try common datetime layouts; fallback marks as invalid
 			parsed, parseErr := time.Parse("2006-01-02 15:04:05", dueRaw.String)
 			if parseErr != nil {
 				parsed, parseErr = time.Parse(time.RFC3339, dueRaw.String)
