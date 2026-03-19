@@ -43,6 +43,25 @@ func main() {
 		r.Get("/project-status", handler.ProjectProgress)
 		r.Get("/upcoming", handler.UpcomingDeadlines)
 	})
+	r.Route("/project", func(r chi.Router) {
+		r.Use(util.VerifyTokenMiddleware())
+		r.Get("/", handler.GetAllProject)
+
+	})
+	r.Route("/task", func(r chi.Router) {
+		r.Use(util.VerifyTokenMiddleware())
+		r.Get("/", handler.GetAllTask)
+	})
+
+	r.Route("/calendar", func(r chi.Router) {
+		r.Use(util.VerifyTokenMiddleware())
+		r.Get("/", handler.GetCalenderInfo)
+	})
+
+	r.Route("/profile", func(r chi.Router) {
+		r.Use(util.VerifyTokenMiddleware())
+		r.Get("/", handler.GetProfile)
+	})
 
 	//server listening
 	err := http.ListenAndServe(":3000", r)

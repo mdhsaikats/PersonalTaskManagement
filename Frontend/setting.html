@@ -21,18 +21,8 @@
       >
         <!-- Logo -->
         <div class="flex items-center gap-3 px-5 py-6">
-          <div class="flex h-9 w-9 items-center justify-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 64 64"
-              width="64"
-              height="64"
-            >
-              <circle cx="32" cy="32" r="30" fill="#4F46E5" />
-              <rect x="20" y="18" width="24" height="4" rx="1" fill="white" />
-              <rect x="20" y="28" width="24" height="4" rx="1" fill="white" />
-              <rect x="20" y="38" width="24" height="4" rx="1" fill="white" />
-            </svg>
+          <div class="flex h-12 w-12 items-center justify-center">
+            <img src="../asset/logo.png" alt="TaskMinder logo" class="h-12 w-12 object-contain" />
           </div>
           <div>
             <h1 class="text-base font-bold text-gray-900 leading-tight">TaskMinder</h1>
@@ -236,7 +226,8 @@
                     <label class="text-sm font-medium text-gray-700">Email</label>
                     <input
                       type="email"
-                      value="alex@taskminder.com"
+                      id="profile_email"
+                      placeholder="Loading..."
                       class="mt-2 w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -293,5 +284,6 @@
         </main>
       </div>
     </div>
+    <script type="module" src="./js/setting.js"></script>
   </body>
 </html>
