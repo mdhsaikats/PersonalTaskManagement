@@ -3,6 +3,8 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"main.go/database"
@@ -128,39 +130,53 @@ func DeleteProject(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 		return
 	}
-	var userID int
-	var req struct {
-		Id int `json:"id,string"`
+
+	// 🔥 Get ID from URL
+	idStr := strings.TrimPrefix(r.URL.Path, "/project/")
+	projectID, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid project id", http.StatusBadRequest)
+		return
 	}
+
+	// -------- AUTH --------
 	token := util.GetTokenFromHeader(r)
 	if token == "" {
 		http.Error(w, "missing token", http.StatusUnauthorized)
 		return
 	}
+
 	email, err := util.ParseToken(token)
 	if err != nil {
 		http.Error(w, "invalid token", http.StatusUnauthorized)
 		return
 	}
+
+	var userID int
 	err = database.DB.QueryRow(`SELECT id FROM users WHERE email = ?`, email).Scan(&userID)
 	if err != nil {
 		http.Error(w, "user not found", http.StatusUnauthorized)
 		return
 	}
-	err = json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		http.Error(w, "Invalid json", http.StatusBadRequest)
-		return
-	}
+
+	// -------- DELETE --------
 	query := `DELETE FROM project WHERE id = ? AND user_id = ?`
-	_, err = database.DB.Exec(query, req.Id, userID)
+	result, err := database.DB.Exec(query, projectID, userID)
 	if err != nil {
-		http.Error(w, "Invalid database query", http.StatusInternalServerError)
+		http.Error(w, "database error", http.StatusInternalServerError)
 		return
 	}
+
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		http.Error(w, "project not found", http.StatusNotFound)
+		return
+	}
+
+	// -------- RESPONSE --------
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"status": "successfully project deleted",
+		"status": "success",
 	})
 }
 
