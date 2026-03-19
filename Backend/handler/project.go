@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"main.go/database"
 	"main.go/model"
 	"main.go/util"
@@ -35,6 +36,7 @@ func GetAllProject(w http.ResponseWriter, r *http.Request) {
 	}
 	var project []model.GetAllProject
 	query := `SELECT 
+	p.id,
     p.title,
     p.description,
     p.status,
@@ -60,7 +62,7 @@ func GetAllProject(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var pr model.GetAllProject
-		err = rows.Scan(&pr.Title, &pr.Description, &pr.Status, &pr.CreatedAt, &pr.TotalTask, &pr.ProjectProgress)
+		err = rows.Scan(&pr.Id, &pr.Title, &pr.Description, &pr.Status, &pr.CreatedAt, &pr.TotalTask, &pr.ProjectProgress)
 		if err != nil {
 			http.Error(w, "Invalid Scan", http.StatusInternalServerError)
 			return
@@ -74,4 +76,134 @@ func GetAllProject(w http.ResponseWriter, r *http.Request) {
 		"project": project,
 	})
 
+}
+
+func CreateNewProject(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+	var project model.CreateNewProject
+
+	err := json.NewDecoder(r.Body).Decode(&project)
+	if err != nil {
+		http.Error(w, "Invalid json", http.StatusBadRequest)
+		return
+	}
+
+	var userID int
+
+	token := util.GetTokenFromHeader(r)
+	if token == "" {
+		http.Error(w, "missing token", http.StatusUnauthorized)
+		return
+	}
+
+	email, err := util.ParseToken(token)
+	if err != nil {
+		http.Error(w, "invalid token", http.StatusUnauthorized)
+		return
+	}
+
+	err = database.DB.QueryRow(`SELECT id FROM users WHERE email = ?`, email).Scan(&userID)
+	if err != nil {
+		http.Error(w, "user not found", http.StatusUnauthorized)
+		return
+	}
+
+	query := `INSERT INTO project (title,description,user_id) VALUES (?,?,?)`
+
+	_, err = database.DB.Exec(query, project.Title, project.Description, userID)
+	if err != nil {
+		http.Error(w, "invalid query to the database", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status": "successfully project created",
+	})
+}
+func DeleteProject(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+	var userID int
+	var req struct {
+		Id int `json:"id,string"`
+	}
+	token := util.GetTokenFromHeader(r)
+	if token == "" {
+		http.Error(w, "missing token", http.StatusUnauthorized)
+		return
+	}
+	email, err := util.ParseToken(token)
+	if err != nil {
+		http.Error(w, "invalid token", http.StatusUnauthorized)
+		return
+	}
+	err = database.DB.QueryRow(`SELECT id FROM users WHERE email = ?`, email).Scan(&userID)
+	if err != nil {
+		http.Error(w, "user not found", http.StatusUnauthorized)
+		return
+	}
+	err = json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, "Invalid json", http.StatusBadRequest)
+		return
+	}
+	query := `DELETE FROM project WHERE id = ? AND user_id = ?`
+	_, err = database.DB.Exec(query, req.Id, userID)
+	if err != nil {
+		http.Error(w, "Invalid database query", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status": "successfully project deleted",
+	})
+}
+
+func EditProject(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+	var userID int
+	var req struct {
+		Title       string `json:"title"`
+		Description string `json:"description"`
+		Status      int    `json:"status"`
+	}
+	token := util.GetTokenFromHeader(r)
+	if token == "" {
+		http.Error(w, "missing token", http.StatusUnauthorized)
+		return
+	}
+	email, err := util.ParseToken(token)
+	if err != nil {
+		http.Error(w, "invalid token", http.StatusUnauthorized)
+		return
+	}
+	err = database.DB.QueryRow(`SELECT id FROM users WHERE email = ?`, email).Scan(&userID)
+	if err != nil {
+		http.Error(w, "user not found", http.StatusUnauthorized)
+		return
+	}
+	err = json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, "Invalid json", http.StatusBadRequest)
+		return
+	}
+	idStr := chi.URLParam(r, "id")
+	query := `UPDATE project SET title = ?, description = ?, status = ? WHERE id = ? AND user_id = ?`
+	_, err = database.DB.Exec(query, req.Title, req.Description, req.Status, idStr, userID)
+	if err != nil {
+		http.Error(w, "Invalid database query", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status": "successfully project edited",
+	})
 }

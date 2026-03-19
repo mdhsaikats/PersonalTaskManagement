@@ -46,11 +46,15 @@ func main() {
 	r.Route("/project", func(r chi.Router) {
 		r.Use(util.VerifyTokenMiddleware())
 		r.Get("/", handler.GetAllProject)
+		r.Post("/", handler.CreateNewProject)
+		r.Put("/:id", handler.EditProject)
 
 	})
 	r.Route("/task", func(r chi.Router) {
 		r.Use(util.VerifyTokenMiddleware())
 		r.Get("/", handler.GetAllTask)
+		r.Post("/", handler.CreateTask)
+		r.Put("/", handler.UpdateTaskStatus)
 	})
 
 	r.Route("/calendar", func(r chi.Router) {
