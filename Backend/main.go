@@ -48,7 +48,7 @@ func main() {
 		r.Get("/", handler.GetAllProject)
 		r.Post("/", handler.CreateNewProject)
 		r.Put("/:id", handler.EditProject)
-
+		r.Delete("/:id", handler.DeleteProject)
 	})
 	r.Route("/task", func(r chi.Router) {
 		r.Use(util.VerifyTokenMiddleware())

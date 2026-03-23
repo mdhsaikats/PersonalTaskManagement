@@ -14,3 +14,8 @@ type CreateNewProject struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
+
+type EditProject struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}

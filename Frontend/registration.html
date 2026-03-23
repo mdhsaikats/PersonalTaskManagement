@@ -4,70 +4,85 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Login - page</title>
+    <title>Register - Your App Name</title>
   </head>
-  <body>
-    <div class="flex justify-center items-center min-h-screen bg-gray-100">
-      <div class="bg-white border-2 border-black w-96 p-6 rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-center mb-4">Registration Page</h1>
-        <div class="border-b border-black mb-6"></div>
+  <body class="bg-gray-50 text-gray-800 antialiased">
+    <div class="flex min-h-screen items-center justify-center p-6 md:p-12">
+      
+      <div class="bg-white border border-gray-200 w-full max-w-md p-8 rounded-2xl shadow-xl">
+        
+        <div class="text-center mb-8">
+          <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Create an Account</h1>
+          <p class="text-gray-500 text-sm">Join us today! Please fill in your details.</p>
+        </div>
 
         <form class="flex flex-col" id="registration">
-          <!-- Email -->
-          <label for="email" class="mb-2 font-medium">Email</label>
-          <input
-            type="text"
-            name="username"
-            id="email"
-            placeholder="Enter your email"
-            class="border border-black rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
+          
+          <div class="mb-5">
+            <label for="email" class="block mb-2 text-sm font-semibold text-gray-700">Email Address</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              required
+            />
+          </div>
 
-          <!-- Password -->
-          <label for="password" class="mb-2 font-medium">Password</label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Enter your password"
-            class="border border-black rounded px-3 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-          <label for="confirmPassword" class="mb-2 font-medium"
-            >Confirm Password</label
-          >
-          <input
-            type="password"
-            name="confirmPassword"
-            id="confirmPassword"
-            placeholder="Confirm your password"
-            class="border border-black rounded px-3 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
+          <div class="mb-5">
+            <label for="password" class="block mb-2 text-sm font-semibold text-gray-700">Password</label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              autocomplete="new-password"
+              placeholder="Create a strong password"
+              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              required
+            />
+          </div>
 
-          <!-- Submit Button -->
+          <div class="mb-6">
+            <label for="confirmPassword" class="block mb-2 text-sm font-semibold text-gray-700">Confirm Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              id="confirmPassword"
+              autocomplete="new-password"
+              placeholder="Repeat your password"
+              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              required
+            />
+          </div>
+
           <button
             type="submit"
-            class="bg-black text-white py-2 rounded hover:bg-white hover:border hover:border-black hover:text-black transition-colors mb-4"
+            class="w-full bg-gray-900 text-white font-semibold py-3 rounded-lg hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 transition-all duration-300 mb-6 shadow-md"
           >
-            Submit
+            Sign Up
           </button>
-          <p class="flex justify-center">
-            Have an account?
+
+          <p class="text-center text-sm text-gray-600">
+            Already have an account?
             <a
               href="index.html"
-              class="text-blue-500 hover:underline transition duration-300"
-              >Login</a
+              class="font-semibold text-blue-600 hover:text-blue-500 hover:underline transition duration-300"
             >
+              Sign in
+            </a>
           </p>
         </form>
       </div>
     </div>
+
     <div
       id="toast-container"
+      aria-live="polite"
       class="fixed top-5 right-5 flex flex-col gap-3 z-50"
     ></div>
+
     <script type="module" src="js/registration.js"></script>
   </body>
 </html>

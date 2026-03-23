@@ -28,10 +28,10 @@ function setLoading(show) {
 
 // -------------------- Render --------------------
 
+
 function renderProjects(projects) {
   if (!projectGrid) return;
-
-  if (!projects || projects.length === 0) {
+  if (!Array.isArray(projects) || projects.length === 0) {
     projectGrid.innerHTML = `
       <div class="col-span-3 bg-white border border-gray-100 rounded-2xl p-6 text-center text-gray-500">
         No projects found.
@@ -40,6 +40,7 @@ function renderProjects(projects) {
     return;
   }
 
+
   const cards = projects.map((proj) => {
     const pid = proj.id ?? "";
     const { label, badge } = statusMeta(proj.status);
@@ -47,34 +48,44 @@ function renderProjects(projects) {
     const createdText = formatDate(proj.created_at);
     const totalTasks = Math.max(0, Number(proj.total_task) || 0);
 
+
+
     return `
-      <div class="bg-white rounded-xl border border-gray-200 p-6 flex flex-col gap-3 group transition-all duration-200 hover:border-blue-400"
+      <div class="bg-white rounded-xl border border-gray-200 p-6 flex flex-col gap-3 group transition-all duration-200 hover:border-blue-400 relative"
            data-project-id="${pid}">
+
+        <span class="project-status-badge absolute top-4 right-4 text-xs font-semibold ${badge} px-2 py-0.5 rounded-full uppercase transition group-hover:opacity-0 group-hover:pointer-events-none z-10">
+          ${label}
+        </span>
 
         <div class="flex items-center justify-between mb-1">
           <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-gray-500 hover:text-indigo-500 transition-colors duration-200">
+  <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+</svg>
           </div>
 
-          <span class="text-xs font-semibold ${badge} px-2 py-0.5 rounded-full uppercase">
-            ${label}
-          </span>
-
-          <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition">
+          <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition group-hover:pointer-events-auto">
             <button class="editProjectBtn p-1 rounded hover:bg-blue-50 text-blue-600"
                     data-project-id="${pid}"
                     data-project-name="${proj.title || "Project"}"
                     data-project-desc="${proj.description || ""}">
-              ✏️
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-gray-500 hover:text-blue-500 transition-colors duration-200">
+  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+</svg>
             </button>
 
             <button class="deleteProjectBtn p-1 rounded hover:bg-red-50 text-red-600"
                     data-project-id="${pid}"
                     data-project-name="${proj.title || "Project"}">
-              ❌
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-gray-500 hover:text-red-500 transition-colors duration-200">
+  <path d="M3 6h18" />
+  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+  <line x1="10" y1="11" x2="10" y2="17" />
+  <line x1="14" y1="11" x2="14" y2="17" />
+</svg>
             </button>
           </div>
         </div>
@@ -105,6 +116,12 @@ function renderProjects(projects) {
           </div>
         </div>
 
+        <button class="addTaskBtn mt-3 px-4 py-2 rounded-lg bg-blue-50 text-blue-700 font-semibold text-xs hover:bg-blue-100 transition-colors"
+                data-project-id="${pid}"
+                data-project-name="${proj.title || 'Project'}">
+          + Add Task
+        </button>
+
       </div>
     `;
   });
@@ -120,15 +137,86 @@ function setupEventDelegation() {
   projectGrid.addEventListener("click", (e) => {
     const editBtn = e.target.closest(".editProjectBtn");
     const deleteBtn = e.target.closest(".deleteProjectBtn");
+    const addTaskBtn = e.target.closest(".addTaskBtn");
 
     // -------- EDIT --------
     if (editBtn) {
       const pid = editBtn.dataset.projectId;
       const pname = editBtn.dataset.projectName;
       const pdesc = editBtn.dataset.projectDesc;
-
       openEditProjectModal(pid, pname, pdesc);
     }
+
+    // -------- ADD TASK --------
+    if (addTaskBtn) {
+      const pid = addTaskBtn.dataset.projectId;
+      const pname = addTaskBtn.dataset.projectName;
+      openAddTaskModal(pid, pname);
+    }
+// Add Task Modal logic
+function openAddTaskModal(projectId, projectName) {
+  const modal = document.getElementById("addProjectTaskModal");
+  if (!modal) return;
+  modal.style.display = "flex";
+  document.getElementById("selectedProjectId").value = projectId;
+  document.getElementById("addProjectTaskModalTitle").textContent = `Add Task to ${projectName}`;
+
+  // Clear fields
+  document.getElementById("projectTaskTitle").value = "";
+  document.getElementById("projectTaskDescription").value = "";
+  document.getElementById("projectTaskDueDate").value = "";
+
+  // Close/cancel logic
+  document.getElementById("closeAddProjectTaskModal").onclick = () => {
+    modal.style.display = "none";
+  };
+  document.getElementById("cancelAddProjectTask").onclick = () => {
+    modal.style.display = "none";
+  };
+}
+
+// Add Task form submit logic
+document.addEventListener("DOMContentLoaded", () => {
+  const addTaskForm = document.getElementById("addProjectTaskForm");
+  if (addTaskForm) {
+    addTaskForm.onsubmit = async function (e) {
+      e.preventDefault();
+      const projectId = document.getElementById("selectedProjectId").value;
+      const title = document.getElementById("projectTaskTitle").value;
+      const description = document.getElementById("projectTaskDescription").value;
+      const dueDate = document.getElementById("projectTaskDueDate").value;
+      await addTaskToProject(projectId, title, description, dueDate);
+      document.getElementById("addProjectTaskModal").style.display = "none";
+    };
+  }
+});
+
+// Add Task API
+async function addTaskToProject(projectId, title, description, dueDate) {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${BASE_URL}/task/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify({
+        project_id: Number(projectId),
+        title,
+        description,
+        due_date: dueDate,
+      }),
+    });
+    if (!res.ok) {
+      alert("Failed to add task");
+      return;
+    }
+    loadProjects(); // refresh project/task counts
+  } catch (err) {
+    console.error("Add task error:", err);
+  }
+}
 // Modal logic for editing project
 function openEditProjectModal(id, name, desc) {
   let modal = document.getElementById("editProjectModal");
