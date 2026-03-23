@@ -1,6 +1,7 @@
 import { BASE_URL } from "./config.js";
 
 const monthLabel = document.getElementById("month_label");
+const headersContainer = document.getElementById("calendar_headers");
 const grid = document.getElementById("calendar_grid");
 const prevBtn = document.getElementById("prev_month");
 const nextBtn = document.getElementById("next_month");
@@ -68,14 +69,38 @@ function monthsInRange(start, end) {
   return Array.from(months);
 }
 
+// Dynamically render the Days of the Week headers
+function renderHeaders(viewDate) {
+  if (!headersContainer) return;
+  headersContainer.innerHTML = "";
+  
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  if (viewMode === "month" || viewMode === "week") {
+    headersContainer.className = "grid grid-cols-7 border-b border-gray-100 bg-gray-50/50";
+    for (let i = 0; i < 7; i++) {
+      const header = document.createElement("div");
+      header.className = "py-2.5 text-center text-[11px] font-semibold text-gray-500 uppercase tracking-widest" + (i > 0 ? " border-l border-gray-100/50" : "");
+      header.textContent = daysOfWeek[i];
+      headersContainer.appendChild(header);
+    }
+  } else if (viewMode === "day") {
+    headersContainer.className = "grid grid-cols-1 border-b border-gray-100 bg-gray-50/50";
+    const header = document.createElement("div");
+    header.className = "py-2.5 text-center text-[11px] font-semibold text-gray-500 uppercase tracking-widest";
+    header.textContent = daysOfWeek[viewDate.getDay()];
+    headersContainer.appendChild(header);
+  }
+}
+
 function setGridLayout(mode) {
   if (!grid) return;
   if (mode === "month") {
-    grid.className = "flex-1 grid grid-cols-7 grid-rows-6";
+    grid.className = "grid grid-cols-7 grid-rows-6 h-full min-h-[600px]";
   } else if (mode === "week") {
-    grid.className = "flex-1 grid grid-cols-7 grid-rows-1";
+    grid.className = "grid grid-cols-7 grid-rows-1 h-full min-h-full";
   } else {
-    grid.className = "flex-1 grid grid-cols-1 grid-rows-1";
+    grid.className = "grid grid-cols-1 grid-rows-1 h-full min-h-full";
   }
 }
 
@@ -86,6 +111,41 @@ function buildGrid(viewDate) {
   const cells = [];
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
+  const todayStr = new Date().toDateString();
+
+  const createCell = (cellDate, muted) => {
+    const cell = document.createElement("div");
+    // Added a subtle hover background to cells
+    cell.className = "border-b border-r border-gray-100 p-1.5 min-h-[110px] bg-white hover:bg-gray-50/50 transition-colors group relative flex flex-col";
+    cell.dataset.date = isoDate(cellDate);
+
+    const isToday = cellDate.toDateString() === todayStr;
+
+    // Header area of the cell (holds the number)
+    const headerDiv = document.createElement("div");
+    headerDiv.className = "flex justify-center mb-1";
+    
+    const num = document.createElement("span");
+    
+    // Refined Today Highlight
+    if (isToday) {
+      num.className = "text-xs font-bold text-white bg-blue-600 w-6 h-6 flex items-center justify-center rounded-full mt-0.5 shadow-sm";
+    } else {
+      num.className = `text-xs font-medium w-6 h-6 flex items-center justify-center rounded-full mt-0.5 ${muted ? 'text-gray-300' : 'text-gray-700'}`;
+    }
+    
+    num.textContent = cellDate.getDate();
+    headerDiv.appendChild(num);
+    cell.appendChild(headerDiv);
+
+    // Container for events inside the cell
+    const eventsContainer = document.createElement("div");
+    eventsContainer.className = "flex-1 flex flex-col gap-1 overflow-y-auto px-0.5 pb-1";
+    cell.appendChild(eventsContainer);
+
+    grid.appendChild(cell);
+    cells.push({ cell, eventsContainer, date: isoDate(cellDate) });
+  };
 
   if (viewMode === "month") {
     const first = new Date(year, month, 1);
@@ -94,9 +154,6 @@ function buildGrid(viewDate) {
     const daysPrevMonth = new Date(year, month, 0).getDate();
 
     for (let i = 0; i < 42; i++) {
-      const cell = document.createElement("div");
-      cell.className = "border-b border-r border-gray-100 p-2 min-h-[110px]";
-
       const dayNumber = i - startDay + 1;
       let displayNum;
       let cellDate;
@@ -114,16 +171,7 @@ function buildGrid(viewDate) {
         displayNum = dayNumber;
         cellDate = new Date(year, month, displayNum);
       }
-
-      cell.dataset.date = isoDate(cellDate);
-
-      const num = document.createElement("span");
-      num.className = muted ? "text-sm text-gray-300" : "text-sm font-semibold text-gray-800";
-      num.textContent = displayNum;
-      cell.appendChild(num);
-
-      grid.appendChild(cell);
-      cells.push(cell);
+      createCell(cellDate, muted);
     }
   } else if (viewMode === "week") {
     const startOfWeek = new Date(viewDate);
@@ -132,39 +180,18 @@ function buildGrid(viewDate) {
     for (let i = 0; i < 7; i++) {
       const cellDate = new Date(startOfWeek);
       cellDate.setDate(startOfWeek.getDate() + i);
-      const cell = document.createElement("div");
-      cell.className = "border-b border-r border-gray-100 p-2 min-h-[110px]";
-      cell.dataset.date = isoDate(cellDate);
-
-      const num = document.createElement("span");
       const muted = cellDate.getMonth() !== month;
-      num.className = muted ? "text-sm text-gray-300" : "text-sm font-semibold text-gray-800";
-      num.textContent = cellDate.getDate();
-      cell.appendChild(num);
-
-      grid.appendChild(cell);
-      cells.push(cell);
+      createCell(cellDate, muted);
     }
   } else {
-    const cellDate = new Date(viewDate);
-    const cell = document.createElement("div");
-    cell.className = "border-b border-r border-gray-100 p-2 min-h-[110px]";
-    cell.dataset.date = isoDate(cellDate);
-
-    const num = document.createElement("span");
-    num.className = "text-sm font-semibold text-gray-800";
-    num.textContent = cellDate.getDate();
-    cell.appendChild(num);
-
-    grid.appendChild(cell);
-    cells.push(cell);
+    createCell(new Date(viewDate), false);
   }
 
   return cells;
 }
 
-function renderEvents(events) {
-  if (!grid || !events) return;
+function renderEvents(events, cellObjects) {
+  if (!events || !cellObjects) return;
 
   const byDate = events.reduce((acc, ev) => {
     if (!ev || !ev.date) return acc;
@@ -173,30 +200,28 @@ function renderEvents(events) {
     return acc;
   }, {});
 
-  Array.from(grid.children).forEach((cell) => {
-    const date = cell.dataset.date;
-    if (!date || !byDate[date]) return;
+  cellObjects.forEach(({ eventsContainer, date }) => {
+    if (!byDate[date]) return;
 
-    // Sort by start time so the day view is ordered.
+    // Sort by start time
     byDate[date].sort((a, b) => (a.start_time || "").localeCompare(b.start_time || ""));
 
-    const wrap = document.createElement("div");
-    wrap.className = "mt-1 space-y-1";
-
     const statusColors = {
-      todo: { text: "text-amber-800", bg: "bg-amber-50", border: "border-amber-200" },
-      in_progress: { text: "text-blue-800", bg: "bg-blue-50", border: "border-blue-200" },
-      completed: { text: "text-emerald-800", bg: "bg-emerald-50", border: "border-emerald-200" },
+      todo: { text: "text-amber-700", bg: "bg-amber-50", border: "border-amber-200" },
+      in_progress: { text: "text-blue-700", bg: "bg-blue-50", border: "border-blue-200" },
+      completed: { text: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200" },
     };
 
     const formatTime = (t) => (t ? t.slice(0, 5) : "");
 
     byDate[date].forEach((ev) => {
-      const pill = document.createElement("span");
-      pill.className = "inline-block text-xs font-medium px-2 py-0.5 rounded-md border";
+      const pill = document.createElement("div");
+      // Refined Pill: Block display, truncate text, pointer cursor
+      pill.className = "block w-full text-[11px] font-medium px-2 py-1 rounded-md border truncate cursor-pointer transition-all hover:opacity-80 hover:shadow-sm";
+      
       const start = formatTime(ev.start_time);
       const end = formatTime(ev.end_time);
-      pill.textContent = [start && end ? `${start}-${end}` : start || end, ev.title || "Untitled"].filter(Boolean).join(" · ");
+      pill.textContent = [start && end ? `${start}-${end}` : start || end, ev.title || "Untitled"].filter(Boolean).join(" ");
 
       const mapped = statusColors[ev.status];
       if (mapped) {
@@ -215,10 +240,8 @@ function renderEvents(events) {
         pill.title = ev.description;
       }
 
-      wrap.appendChild(pill);
+      eventsContainer.appendChild(pill);
     });
-
-    cell.appendChild(wrap);
   });
 }
 
@@ -274,12 +297,13 @@ async function render() {
   }
 
   setGridLayout(viewMode);
-  const cells = buildGrid(currentMonth);
+  renderHeaders(currentMonth); // Injects dynamic headers
+  const cellObjects = buildGrid(currentMonth);
   const range = getViewRange(currentMonth);
 
   try {
     const events = await loadEvents(range);
-    renderEvents(events);
+    renderEvents(events, cellObjects);
   } catch (error) {
     console.error(error);
   }
@@ -307,14 +331,14 @@ function setActiveView(mode) {
   viewMode = mode;
   [dayBtn, weekBtn, monthBtn].forEach((btn) => {
     if (!btn) return;
-    btn.classList.remove("font-semibold", "text-gray-900", "bg-gray-100");
-    btn.classList.add("text-gray-500");
+    // Reset classes to inactive state
+    btn.className = "px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-900 transition-all";
   });
 
   const active = mode === "day" ? dayBtn : mode === "week" ? weekBtn : monthBtn;
   if (active) {
-    active.classList.add("font-semibold", "text-gray-900", "bg-gray-100");
-    active.classList.remove("text-gray-500");
+    // Apply active state classes
+    active.className = "px-4 py-1.5 text-sm font-semibold rounded-md text-gray-900 bg-white shadow-sm ring-1 ring-gray-200/50 transition-all";
   }
 }
 
@@ -324,5 +348,4 @@ if (monthBtn) monthBtn.addEventListener("click", () => { setActiveView("month");
 
 // Initialize
 setActiveView("month");
-
 document.addEventListener("DOMContentLoaded", render);
