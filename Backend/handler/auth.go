@@ -39,6 +39,7 @@ func RegistrationUser(w http.ResponseWriter, r *http.Request) {
 	_, err = database.DB.Exec(query, userregistration.Email, password, "")
 	if err != nil {
 		http.Error(w, "Invalid To Access database", http.StatusInternalServerError)
+
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
@@ -69,6 +70,7 @@ func LoginUsers(w http.ResponseWriter, r *http.Request) {
 	match := util.CheckPasswordHash(userlogin.Password, dbPassword)
 	if match != true {
 		http.Error(w, "Invalid to match the passwords", http.StatusInternalServerError)
+		fmt.Print(err)
 		return
 	}
 
@@ -83,6 +85,7 @@ func LoginUsers(w http.ResponseWriter, r *http.Request) {
 	err = database.DB.QueryRow(query2, userlogin.Email).Scan(&userID)
 	if err != nil {
 		http.Error(w, `"massage": "Invalid to get the user_id"`, http.StatusInternalServerError)
+		fmt.Print(err)
 		return
 	}
 
@@ -90,6 +93,7 @@ func LoginUsers(w http.ResponseWriter, r *http.Request) {
 	_, err = database.DB.Exec(query1, token, userID)
 	if err != nil {
 		http.Error(w, "Invalid to enter the session and the user id to the session table", http.StatusInternalServerError)
+		fmt.Print(err)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
