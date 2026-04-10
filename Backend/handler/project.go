@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -40,8 +41,8 @@ func GetAllProject(w http.ResponseWriter, r *http.Request) {
 	query := `SELECT 
 	p.id,
     p.title,
-    p.description,
-    p.status,
+	IFNULL(p.description, ''),
+	IFNULL(CAST(p.status AS CHAR), '0'),
     p.created_at,
     COUNT(t.id) AS total_task,
     IFNULL(
@@ -58,6 +59,7 @@ func GetAllProject(w http.ResponseWriter, r *http.Request) {
 	rows, err := database.DB.Query(query, userID)
 	if err != nil {
 		http.Error(w, "error to query on database", http.StatusInternalServerError)
+		fmt.Print(err)
 		return
 	}
 	defer rows.Close()
@@ -67,6 +69,7 @@ func GetAllProject(w http.ResponseWriter, r *http.Request) {
 		err = rows.Scan(&pr.Id, &pr.Title, &pr.Description, &pr.Status, &pr.CreatedAt, &pr.TotalTask, &pr.ProjectProgress)
 		if err != nil {
 			http.Error(w, "Invalid Scan", http.StatusInternalServerError)
+			fmt.Print(err)
 			return
 		}
 		project = append(project, pr)
@@ -113,11 +116,12 @@ func CreateNewProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	query := `INSERT INTO project (title,description,user_id) VALUES (?,?,?)`
+	query := `INSERT INTO project (title,description,status,user_id) VALUES (?,?,?,?)`
 
-	_, err = database.DB.Exec(query, project.Title, project.Description, userID)
+	_, err = database.DB.Exec(query, project.Title, project.Description, 1, userID)
 	if err != nil {
 		http.Error(w, "invalid query to the database", http.StatusInternalServerError)
+		fmt.Print(err)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")

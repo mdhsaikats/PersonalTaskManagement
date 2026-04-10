@@ -42,7 +42,10 @@ function renderProjects(projects) {
   const cards = projects.map((proj) => {
     const pid = proj.id ?? "";
     const { label, badge } = statusMeta(proj.status);
-    const progress = Math.max(0, Math.min(100, Number(proj.project_progress) || 0));
+    const progress = Math.max(
+      0,
+      Math.min(100, Number(proj.project_progress) || 0),
+    );
     const createdText = formatDate(proj.created_at);
     const totalTasks = Math.max(0, Number(proj.total_task) || 0);
 
@@ -114,7 +117,7 @@ function renderProjects(projects) {
 
         <button class="addTaskBtn mt-3 px-4 py-2 rounded-lg bg-blue-50 text-blue-700 font-semibold text-xs hover:bg-blue-100 transition-colors"
                 data-project-id="${pid}"
-                data-project-name="${proj.title || 'Project'}">
+                data-project-name="${proj.title || "Project"}">
           + Add Task
         </button>
 
@@ -167,13 +170,85 @@ function setupEventDelegation() {
 
 // -------------------- Modals & Form Logic --------------------
 
+function openCreateProjectModal() {
+  const modal = document.getElementById("createProjectModal");
+  if (!modal) return;
+
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closeCreateProjectModal() {
+  const modal = document.getElementById("createProjectModal");
+  if (!modal) return;
+
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+  modal.setAttribute("aria-hidden", "true");
+}
+
+function setupCreateProjectModal() {
+  const openBtn = document.getElementById("openCreateProjectModal");
+  const closeBtn = document.getElementById("closeCreateProjectModal");
+  const cancelBtn = document.getElementById("cancelCreateProject");
+  const modal = document.getElementById("createProjectModal");
+  const modalPanel = document.getElementById("createProjectModalPanel");
+  const createForm = document.getElementById("createProjectForm");
+
+  if (openBtn) {
+    openBtn.addEventListener("click", openCreateProjectModal);
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeCreateProjectModal);
+  }
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", closeCreateProjectModal);
+  }
+
+  if (modal && modalPanel) {
+    modal.addEventListener("click", (e) => {
+      if (!modalPanel.contains(e.target)) {
+        closeCreateProjectModal();
+      }
+    });
+  }
+
+  if (createForm) {
+    createForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const nameInput = document.getElementById("projectName");
+      const descriptionInput = document.getElementById("projectDescription");
+
+      const title = (nameInput?.value || "").trim();
+      const description = (descriptionInput?.value || "").trim();
+
+      if (!title) {
+        alert("Project name is required");
+        return;
+      }
+
+      const isCreated = await createProject(title, description);
+      if (!isCreated) return;
+
+      createForm.reset();
+      closeCreateProjectModal();
+      loadProjects();
+    });
+  }
+}
+
 // Add Task Modal logic
 function openAddTaskModal(projectId, projectName) {
   const modal = document.getElementById("addProjectTaskModal");
   if (!modal) return;
   modal.style.display = "flex";
   document.getElementById("selectedProjectId").value = projectId;
-  document.getElementById("addProjectTaskModalTitle").textContent = `Add Task to ${projectName}`;
+  document.getElementById("addProjectTaskModalTitle").textContent =
+    `Add Task to ${projectName}`;
 
   // Clear fields
   document.getElementById("projectTaskTitle").value = "";
@@ -195,7 +270,8 @@ function openEditProjectModal(id, name, desc) {
   if (!modal) {
     modal = document.createElement("div");
     modal.id = "editProjectModal";
-    modal.className = "fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4";
+    modal.className =
+      "fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4";
     modal.innerHTML = `
       <div class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-200">
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
@@ -225,7 +301,7 @@ function openEditProjectModal(id, name, desc) {
     document.body.appendChild(modal);
   }
   modal.style.display = "flex";
-  
+
   // Fill fields
   document.getElementById("editProjectName").value = name;
   document.getElementById("editProjectDescription").value = desc;
@@ -249,6 +325,37 @@ function openEditProjectModal(id, name, desc) {
 }
 
 // -------------------- API --------------------
+
+async function createProject(title, description) {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      window.location.href = "index.html";
+      return false;
+    }
+
+    const res = await fetch(`${BASE_URL}/project/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify({ title, description }),
+    });
+
+    if (!res.ok) {
+      alert("Failed to create project");
+      return false;
+    }
+
+    return true;
+  } catch (err) {
+    console.error("Create project error:", err);
+    alert("Unable to create project");
+    return false;
+  }
+}
 
 // Add Task API
 async function addTaskToProject(projectId, title, description, dueDate) {
@@ -318,7 +425,6 @@ async function deleteProject(id) {
 
     // reload after delete
     loadProjects();
-
   } catch (err) {
     console.error("Delete error:", err);
   }
@@ -352,7 +458,6 @@ async function loadProjects() {
     const projects = Array.isArray(data.project) ? data.project : [];
 
     renderProjects(projects);
-
   } catch (err) {
     console.error("Unable to load projects", err);
     renderProjects([]);
@@ -364,22 +469,25 @@ async function loadProjects() {
 // -------------------- Init --------------------
 
 document.addEventListener("DOMContentLoaded", () => {
+  setupCreateProjectModal();
   setupEventDelegation(); // Setup click listeners on the grid
-  loadProjects();         // Fetch and render initial data
+  loadProjects(); // Fetch and render initial data
 
   // Setup Add Task form submission logic ONCE on load
   const addTaskForm = document.getElementById("addProjectTaskForm");
   if (addTaskForm) {
     addTaskForm.onsubmit = async function (e) {
       e.preventDefault();
-      
+
       const projectId = document.getElementById("selectedProjectId").value;
       const title = document.getElementById("projectTaskTitle").value;
-      const description = document.getElementById("projectTaskDescription").value;
+      const description = document.getElementById(
+        "projectTaskDescription",
+      ).value;
       const dueDate = document.getElementById("projectTaskDueDate").value;
-      
+
       await addTaskToProject(projectId, title, description, dueDate);
-      
+
       // Close modal on success
       const modal = document.getElementById("addProjectTaskModal");
       if (modal) modal.style.display = "none";
