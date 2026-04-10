@@ -73,21 +73,26 @@ function monthsInRange(start, end) {
 function renderHeaders(viewDate) {
   if (!headersContainer) return;
   headersContainer.innerHTML = "";
-  
+
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   if (viewMode === "month" || viewMode === "week") {
-    headersContainer.className = "grid grid-cols-7 border-b border-gray-100 bg-gray-50/50";
+    headersContainer.className =
+      "grid grid-cols-7 border-b border-gray-100 bg-gray-50/50";
     for (let i = 0; i < 7; i++) {
       const header = document.createElement("div");
-      header.className = "py-2.5 text-center text-[11px] font-semibold text-gray-500 uppercase tracking-widest" + (i > 0 ? " border-l border-gray-100/50" : "");
+      header.className =
+        "py-2.5 text-center text-[11px] font-semibold text-gray-500 uppercase tracking-widest" +
+        (i > 0 ? " border-l border-gray-100/50" : "");
       header.textContent = daysOfWeek[i];
       headersContainer.appendChild(header);
     }
   } else if (viewMode === "day") {
-    headersContainer.className = "grid grid-cols-1 border-b border-gray-100 bg-gray-50/50";
+    headersContainer.className =
+      "grid grid-cols-1 border-b border-gray-100 bg-gray-50/50";
     const header = document.createElement("div");
-    header.className = "py-2.5 text-center text-[11px] font-semibold text-gray-500 uppercase tracking-widest";
+    header.className =
+      "py-2.5 text-center text-[11px] font-semibold text-gray-500 uppercase tracking-widest";
     header.textContent = daysOfWeek[viewDate.getDay()];
     headersContainer.appendChild(header);
   }
@@ -116,7 +121,8 @@ function buildGrid(viewDate) {
   const createCell = (cellDate, muted) => {
     const cell = document.createElement("div");
     // Added a subtle hover background to cells
-    cell.className = "border-b border-r border-gray-100 p-1.5 min-h-[110px] bg-white hover:bg-gray-50/50 transition-colors group relative flex flex-col";
+    cell.className =
+      "border-b border-r border-gray-100 p-1.5 min-h-[110px] bg-white hover:bg-gray-50/50 transition-colors group relative flex flex-col";
     cell.dataset.date = isoDate(cellDate);
 
     const isToday = cellDate.toDateString() === todayStr;
@@ -124,23 +130,25 @@ function buildGrid(viewDate) {
     // Header area of the cell (holds the number)
     const headerDiv = document.createElement("div");
     headerDiv.className = "flex justify-center mb-1";
-    
+
     const num = document.createElement("span");
-    
+
     // Refined Today Highlight
     if (isToday) {
-      num.className = "text-xs font-bold text-white bg-blue-600 w-6 h-6 flex items-center justify-center rounded-full mt-0.5 shadow-sm";
+      num.className =
+        "text-xs font-bold text-white bg-blue-600 w-6 h-6 flex items-center justify-center rounded-full mt-0.5 shadow-sm";
     } else {
-      num.className = `text-xs font-medium w-6 h-6 flex items-center justify-center rounded-full mt-0.5 ${muted ? 'text-gray-300' : 'text-gray-700'}`;
+      num.className = `text-xs font-medium w-6 h-6 flex items-center justify-center rounded-full mt-0.5 ${muted ? "text-gray-300" : "text-gray-700"}`;
     }
-    
+
     num.textContent = cellDate.getDate();
     headerDiv.appendChild(num);
     cell.appendChild(headerDiv);
 
     // Container for events inside the cell
     const eventsContainer = document.createElement("div");
-    eventsContainer.className = "flex-1 flex flex-col gap-1 overflow-y-auto px-0.5 pb-1";
+    eventsContainer.className =
+      "flex-1 flex flex-col gap-1 overflow-y-auto px-0.5 pb-1";
     cell.appendChild(eventsContainer);
 
     grid.appendChild(cell);
@@ -204,12 +212,26 @@ function renderEvents(events, cellObjects) {
     if (!byDate[date]) return;
 
     // Sort by start time
-    byDate[date].sort((a, b) => (a.start_time || "").localeCompare(b.start_time || ""));
+    byDate[date].sort((a, b) =>
+      (a.start_time || "").localeCompare(b.start_time || ""),
+    );
 
     const statusColors = {
-      todo: { text: "text-amber-700", bg: "bg-amber-50", border: "border-amber-200" },
-      in_progress: { text: "text-blue-700", bg: "bg-blue-50", border: "border-blue-200" },
-      completed: { text: "text-emerald-700", bg: "bg-emerald-50", border: "border-emerald-200" },
+      todo: {
+        text: "text-amber-700",
+        bg: "bg-amber-50",
+        border: "border-amber-200",
+      },
+      in_progress: {
+        text: "text-blue-700",
+        bg: "bg-blue-50",
+        border: "border-blue-200",
+      },
+      completed: {
+        text: "text-emerald-700",
+        bg: "bg-emerald-50",
+        border: "border-emerald-200",
+      },
     };
 
     const formatTime = (t) => (t ? t.slice(0, 5) : "");
@@ -217,11 +239,17 @@ function renderEvents(events, cellObjects) {
     byDate[date].forEach((ev) => {
       const pill = document.createElement("div");
       // Refined Pill: Block display, truncate text, pointer cursor
-      pill.className = "block w-full text-[11px] font-medium px-2 py-1 rounded-md border truncate cursor-pointer transition-all hover:opacity-80 hover:shadow-sm";
-      
+      pill.className =
+        "block w-full text-[11px] font-medium px-2 py-1 rounded-md border truncate cursor-pointer transition-all hover:opacity-80 hover:shadow-sm";
+
       const start = formatTime(ev.start_time);
       const end = formatTime(ev.end_time);
-      pill.textContent = [start && end ? `${start}-${end}` : start || end, ev.title || "Untitled"].filter(Boolean).join(" ");
+      pill.textContent = [
+        start && end ? `${start}-${end}` : start || end,
+        ev.title || "Untitled",
+      ]
+        .filter(Boolean)
+        .join(" ");
 
       const mapped = statusColors[ev.status];
       if (mapped) {
@@ -254,16 +282,18 @@ async function loadEvents(range) {
 
   const months = monthsInRange(range.start, range.end);
 
-  const responses = await Promise.all(months.map(async (m) => {
-    const res = await fetch(`${BASE_URL}/calendar?month=${m}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  const responses = await Promise.all(
+    months.map(async (m) => {
+      const res = await fetch(`${BASE_URL}/calendar?month=${m}`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    if (!res.ok) throw new Error(`Calendar fetch failed: ${res.status}`);
-    const data = await res.json();
-    return Array.isArray(data.events) ? data.events : [];
-  }));
+      if (!res.ok) throw new Error(`Calendar fetch failed: ${res.status}`);
+      const data = await res.json();
+      return Array.isArray(data.events) ? data.events : [];
+    }),
+  );
 
   const allEvents = responses.flat();
 
@@ -281,11 +311,14 @@ async function render() {
     } else if (viewMode === "week") {
       const startOfWeek = new Date(currentMonth);
       startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-      monthLabel.textContent = `Week of ${startOfWeek.toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })}`;
+      monthLabel.textContent = `Week of ${startOfWeek.toLocaleDateString(
+        undefined,
+        {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        },
+      )}`;
     } else {
       monthLabel.textContent = currentMonth.toLocaleDateString(undefined, {
         weekday: "long",
@@ -311,40 +344,67 @@ async function render() {
 
 function shiftMonth(delta) {
   if (viewMode === "month") {
-    currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1);
+    currentMonth = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth() + delta,
+      1,
+    );
   } else if (viewMode === "week") {
-    currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), currentMonth.getDate() + delta * 7);
+    currentMonth = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth(),
+      currentMonth.getDate() + delta * 7,
+    );
   } else {
-    currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), currentMonth.getDate() + delta);
+    currentMonth = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth(),
+      currentMonth.getDate() + delta,
+    );
   }
   render();
 }
 
 if (prevBtn) prevBtn.addEventListener("click", () => shiftMonth(-1));
 if (nextBtn) nextBtn.addEventListener("click", () => shiftMonth(1));
-if (todayBtn) todayBtn.addEventListener("click", () => {
-  currentMonth = new Date();
-  render();
-});
+if (todayBtn)
+  todayBtn.addEventListener("click", () => {
+    currentMonth = new Date();
+    render();
+  });
 
 function setActiveView(mode) {
   viewMode = mode;
   [dayBtn, weekBtn, monthBtn].forEach((btn) => {
     if (!btn) return;
     // Reset classes to inactive state
-    btn.className = "px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-900 transition-all";
+    btn.className =
+      "px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-900 transition-all";
   });
 
   const active = mode === "day" ? dayBtn : mode === "week" ? weekBtn : monthBtn;
   if (active) {
     // Apply active state classes
-    active.className = "px-4 py-1.5 text-sm font-semibold rounded-md text-gray-900 bg-white shadow-sm ring-1 ring-gray-200/50 transition-all";
+    active.className =
+      "px-4 py-1.5 text-sm font-semibold rounded-md text-gray-900 bg-white shadow-sm ring-1 ring-gray-200/50 transition-all";
   }
 }
 
-if (dayBtn) dayBtn.addEventListener("click", () => { setActiveView("day"); render(); });
-if (weekBtn) weekBtn.addEventListener("click", () => { setActiveView("week"); render(); });
-if (monthBtn) monthBtn.addEventListener("click", () => { setActiveView("month"); render(); });
+if (dayBtn)
+  dayBtn.addEventListener("click", () => {
+    setActiveView("day");
+    render();
+  });
+if (weekBtn)
+  weekBtn.addEventListener("click", () => {
+    setActiveView("week");
+    render();
+  });
+if (monthBtn)
+  monthBtn.addEventListener("click", () => {
+    setActiveView("month");
+    render();
+  });
 
 // Initialize
 setActiveView("month");
