@@ -190,11 +190,7 @@ func EditProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var userID int
-	var req struct {
-		Title       string `json:"title"`
-		Description string `json:"description"`
-		Status      int    `json:"status"`
-	}
+	var req model.EditProject
 	token := util.GetTokenFromHeader(r)
 	if token == "" {
 		http.Error(w, "missing token", http.StatusUnauthorized)
@@ -216,8 +212,8 @@ func EditProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	idStr := chi.URLParam(r, "id")
-	query := `UPDATE project SET title = ?, description = ?, status = ? WHERE id = ? AND user_id = ?`
-	_, err = database.DB.Exec(query, req.Title, req.Description, req.Status, idStr, userID)
+	query := `UPDATE project SET title = ?, description = ? WHERE id = ? AND user_id = ?`
+	_, err = database.DB.Exec(query, req.Title, req.Description, idStr, userID)
 	if err != nil {
 		http.Error(w, "Invalid database query", http.StatusInternalServerError)
 		return

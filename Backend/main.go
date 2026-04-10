@@ -55,6 +55,8 @@ func main() {
 		r.Get("/", handler.GetAllTask)
 		r.Post("/", handler.CreateTask)
 		r.Put("/", handler.UpdateTaskStatus)
+		r.Put("/edit", handler.EditTask)
+		r.Delete("/delete", handler.DeleteTask)
 	})
 
 	r.Route("/calendar", func(r chi.Router) {
@@ -68,7 +70,7 @@ func main() {
 	})
 
 	//server listening
-	err := http.ListenAndServe(":3000", r)
+	err := http.ListenAndServe(":8080", r)
 	if err != nil {
 		fmt.Println("Server crushed")
 	} else {
