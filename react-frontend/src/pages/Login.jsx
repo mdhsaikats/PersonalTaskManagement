@@ -53,7 +53,7 @@ const Login = () => {
       </div>
 
       <div className="flex w-full lg:w-1/2 items-center justify-center p-6 md:p-12 relative z-10">
-        <div className="bg-surface/90 backdrop-blur-xl w-full max-w-md p-8 sm:p-10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-glass-border/50 hover:shadow-[0_8px_30px_rgba(244,81,95,0.1)] transition-all duration-500">
+        <div className="bg-surface/90 backdrop-blur-xl w-full max-w-md p-5 md:p-8 sm:p-10 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-glass-border/50 hover:shadow-[0_8px_30px_rgba(244,81,95,0.1)] transition-all duration-500">
           <div className="text-center mb-10">
             <h1 className="text-4xl font-extrabold text-navy mb-3 tracking-tight">
               Welcome Back
@@ -106,7 +106,7 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-navy text-white font-bold text-sm tracking-wide py-4 rounded-xl hover:bg-coral hover:shadow-lg hover:-translate-y-0.5 focus:ring-4 focus:ring-coral/20 transition-all duration-300 mb-8"
+              className="w-full bg-brand-dark text-white font-bold text-sm tracking-wide py-4 rounded-xl hover:bg-coral hover:shadow-lg hover:-translate-y-0.5 focus:ring-4 focus:ring-coral/20 transition-all duration-300 mb-8"
             >
               Sign In
             </button>
@@ -128,4 +128,9 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
+
+
 

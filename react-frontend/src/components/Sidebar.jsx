@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -118,7 +118,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-[240px] bg-surface/80 backdrop-blur-xl border-r border-glass-border/40 shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col fixed h-full z-20">
+    <aside className={`w-[240px] bg-surface/80 backdrop-blur-xl border-r border-glass-border/40 shadow-[4px_0_24px_rgba(0,0,0,0.02)] flex flex-col fixed h-full z-40 transform transition-transform duration-300 md:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-6">
         <div className="flex h-12 w-12 items-center justify-center">
@@ -195,4 +195,8 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+
+
+
 

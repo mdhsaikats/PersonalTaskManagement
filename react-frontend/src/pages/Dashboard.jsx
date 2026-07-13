@@ -96,7 +96,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <header className="flex items-center gap-4 bg-surface/60 backdrop-blur-xl px-8 py-5 border-b border-glass-border/40 sticky top-0 z-[5] shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
+      <header className="flex items-center gap-4 bg-surface/60 backdrop-blur-xl px-5 md:px-8 py-5 border-b border-glass-border/40 sticky top-0 z-[5] shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-gradient-to-br from-coral to-coral-hover rounded-xl shadow-sm text-white">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -108,7 +108,7 @@ const Dashboard = () => {
       </header>
 
       <main className="p-8">
-        <div className="grid grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Stats Cards */}
           {[
             { label: "Total Tasks", value: stats.total_tasks, iconColor: "text-coral bg-skin/80", 
@@ -142,9 +142,9 @@ const Dashboard = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Upcoming Deadlines */}
-          <div className="col-span-3 bg-surface/80 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-glass-border/60 hover:shadow-lg transition-shadow duration-300">
+          <div className="col-span-1 lg:col-span-3 bg-surface/80 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-glass-border/60 hover:shadow-lg transition-shadow duration-300">
             <div className="flex justify-between items-center px-7 py-6 border-b border-skin/60">
               <h2 className="text-xl font-extrabold text-navy tracking-tight">Upcoming Deadlines</h2>
               <Link to="/calendar" className="text-sm font-bold text-coral hover:text-coral-hover hover:underline transition-all">View Calendar</Link>
@@ -193,7 +193,7 @@ const Dashboard = () => {
             )}
           </div>
 
-          <div className="col-span-2 flex flex-col gap-6">
+          <div className="col-span-1 lg:col-span-2 flex flex-col gap-6">
             {/* Today's Task */}
             <div className="bg-surface/80 backdrop-blur-xl rounded-[1.5rem] shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-glass-border/60 hover:shadow-lg transition-shadow duration-300">
               <div className="flex items-center gap-3 px-7 py-6 border-b border-skin/60">
@@ -278,4 +278,9 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+
+
+
+
 

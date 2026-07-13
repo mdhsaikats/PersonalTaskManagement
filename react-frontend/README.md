@@ -1,18 +1,60 @@
-# React + Vite
+![TaskMinder](asset/logo.png)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+# TaskMinder — Personal Task Manager
 
-Currently, two official plugins are available:
+A full-stack personal task manager built with Go on the backend and vanilla HTML/JS/Tailwind CSS on the frontend. Track projects, tasks, deadlines, and calendar events with JWT-protected APIs.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
+- Dashboard cards for totals, in-progress, completed tasks, and upcoming deadlines
+- Project and task listing tied to user accounts
+- Calendar view powered by `/calendar` API (supports month/week/day views on frontend)
+- Auth flows: registration, login, logout using JWT
+- Profile endpoint to fetch the signed-in user email
 
-## React Compiler
+## Tech Stack
+- Backend: Go, chi router, MySQL, JWT auth
+- Frontend: HTML, Tailwind CSS (CDN), vanilla JS
+- Database: MySQL schema in `database/taskmanager.sql`
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Project Structure
+- Backend/ — Go server, handlers, models, DB setup
+- Frontend/ — static pages (dashboard, tasks, projects, calendar, settings) and JS
+- database/taskmanager.sql — schema and seed
+- asset/ — app logo and assets
 
-Note: This will impact Vite dev & build performances.
+## Running the Backend
+1) MySQL
+- Import `database/taskmanager.sql` or create an equivalent schema.
+- Update the DSN in `Backend/database/db.go` if your MySQL credentials/host differ.
 
-## Expanding the Oxlint configuration
+2) Go server
+```bash
+cd Backend
+go run .
+```
+Server listens on `http://localhost:3000`.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Key API Endpoints
+- `POST /login` — returns JWT
+- `POST /registration` — create user
+- `POST /logout` — remove session
+- `GET /dashboard/header` — totals
+- `GET /dashboard/todaystask`
+- `GET /dashboard/project-status`
+- `GET /dashboard/upcoming`
+- `GET /project/` — list projects (auth)
+- `GET /task/` — list tasks (auth)
+- `GET /calendar/` — calendar events, optional `?month=YYYY-MM`
+- `GET /profile/` — returns `{ "email": "...", "status": "success" }`
+
+All protected routes expect `Authorization: Bearer <token>`.
+
+## Frontend Usage
+Open the HTML files from `Frontend/` in a browser (or serve statically). The frontend reads `BASE_URL` from `Frontend/js/config.js` (defaults to `http://localhost:3000`). Store the JWT in `localStorage` under `token` (handled by login page scripts).
+
+## Notes
+- Calendar and settings pages rely on `/calendar/` and `/profile/` endpoints respectively.
+- Update DSN/ports as needed for your environment.
+
+## License
+MIT

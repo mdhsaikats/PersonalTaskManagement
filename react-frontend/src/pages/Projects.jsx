@@ -141,7 +141,7 @@ const Projects = () => {
 
   return (
     <>
-      <header className="flex justify-between items-center bg-surface/60 backdrop-blur-xl px-8 py-5 border-b border-glass-border/40 sticky top-0 z-[5] shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
+      <header className="flex justify-between items-center bg-surface/60 backdrop-blur-xl px-5 md:px-8 py-5 border-b border-glass-border/40 sticky top-0 z-[5] shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
         <h1 className="text-2xl font-extrabold text-navy tracking-tight">Projects</h1>
         <div className="flex items-center gap-4">
           <div className="relative">
@@ -159,7 +159,7 @@ const Projects = () => {
             <h2 className="text-3xl font-extrabold text-navy tracking-tight">Active Projects</h2>
             <p className="text-sm font-medium text-navy/60 mt-1">Manage and track your ongoing workspace projects.</p>
           </div>
-          <button onClick={() => setShowCreateModal(true)} className="flex items-center gap-2 bg-navy text-white text-sm font-bold px-5 py-3 rounded-xl hover:bg-coral hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
+          <button onClick={() => setShowCreateModal(true)} className="flex items-center gap-2 bg-brand-dark text-white text-sm font-bold px-5 py-3 rounded-xl hover:bg-coral hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>
@@ -258,9 +258,9 @@ const Projects = () => {
 
       {/* Modals */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-navy/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
           <div className="w-full max-w-xl bg-surface/90 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-glass-border/50 overflow-hidden transform scale-100 transition-transform duration-300">
-            <div className="flex items-center justify-between px-8 py-5 bg-gradient-to-r from-skin/50 to-transparent border-b border-glass-border/40">
+            <div className="flex items-center justify-between px-5 md:px-8 py-5 bg-gradient-to-r from-skin/50 to-transparent border-b border-glass-border/40">
               <h3 className="text-xl font-extrabold text-navy tracking-tight">Create New Project</h3>
               <button onClick={() => setShowCreateModal(false)} className="p-2 text-navy/50 hover:text-coral hover:bg-surface rounded-xl transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -277,7 +277,7 @@ const Projects = () => {
               </div>
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-skin/50">
                 <button type="button" onClick={() => setShowCreateModal(false)} className="px-5 py-2.5 rounded-xl bg-surface border border-skin text-sm font-bold text-navy/70 hover:bg-skin hover:text-navy transition-all shadow-sm">Cancel</button>
-                <button type="submit" className="px-5 py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-coral hover:shadow-lg hover:-translate-y-0.5 transition-all">Create Project</button>
+                <button type="submit" className="px-5 py-2.5 rounded-xl bg-brand-dark text-white text-sm font-bold hover:bg-coral hover:shadow-lg hover:-translate-y-0.5 transition-all">Create Project</button>
               </div>
             </form>
           </div>
@@ -285,9 +285,9 @@ const Projects = () => {
       )}
 
       {showEditModal && (
-        <div className="fixed inset-0 bg-navy/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
           <div className="w-full max-w-md bg-surface/90 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-glass-border/50 overflow-hidden transform scale-100 transition-transform duration-300">
-            <div className="flex items-center justify-between px-8 py-5 bg-gradient-to-r from-skin/50 to-transparent border-b border-glass-border/40">
+            <div className="flex items-center justify-between px-5 md:px-8 py-5 bg-gradient-to-r from-skin/50 to-transparent border-b border-glass-border/40">
               <h3 className="text-xl font-extrabold text-navy tracking-tight">Edit Project</h3>
               <button onClick={() => setShowEditModal(false)} className="p-2 text-navy/50 hover:text-coral hover:bg-surface rounded-xl transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -304,7 +304,7 @@ const Projects = () => {
               </div>
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-skin/50">
                 <button type="button" onClick={() => setShowEditModal(false)} className="px-5 py-2.5 rounded-xl bg-surface border border-skin text-sm font-bold text-navy/70 hover:bg-skin hover:text-navy transition-all shadow-sm">Cancel</button>
-                <button type="submit" className="px-5 py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-coral hover:shadow-lg hover:-translate-y-0.5 transition-all">Save Changes</button>
+                <button type="submit" className="px-5 py-2.5 rounded-xl bg-brand-dark text-white text-sm font-bold hover:bg-coral hover:shadow-lg hover:-translate-y-0.5 transition-all">Save Changes</button>
               </div>
             </form>
           </div>
@@ -312,9 +312,9 @@ const Projects = () => {
       )}
 
       {showAddTaskModal && (
-        <div className="fixed inset-0 bg-navy/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
           <div className="w-full max-w-xl bg-surface/90 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-glass-border/50 overflow-hidden transform scale-100 transition-transform duration-300">
-            <div className="flex items-center justify-between px-8 py-5 bg-gradient-to-r from-skin/50 to-transparent border-b border-glass-border/40">
+            <div className="flex items-center justify-between px-5 md:px-8 py-5 bg-gradient-to-r from-skin/50 to-transparent border-b border-glass-border/40">
               <h3 className="text-xl font-extrabold text-navy tracking-tight">Add Task to {currentProject?.title}</h3>
               <button onClick={() => setShowAddTaskModal(false)} className="p-2 text-navy/50 hover:text-coral hover:bg-surface rounded-xl transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -335,7 +335,7 @@ const Projects = () => {
               </div>
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-skin/50">
                 <button type="button" onClick={() => setShowAddTaskModal(false)} className="px-5 py-2.5 rounded-xl bg-surface border border-skin text-sm font-bold text-navy/70 hover:bg-skin hover:text-navy transition-all shadow-sm">Cancel</button>
-                <button type="submit" className="px-5 py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-coral hover:shadow-lg hover:-translate-y-0.5 transition-all">Add Task</button>
+                <button type="submit" className="px-5 py-2.5 rounded-xl bg-brand-dark text-white text-sm font-bold hover:bg-coral hover:shadow-lg hover:-translate-y-0.5 transition-all">Add Task</button>
               </div>
             </form>
           </div>
@@ -346,4 +346,9 @@ const Projects = () => {
 };
 
 export default Projects;
+
+
+
+
+
 

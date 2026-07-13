@@ -205,8 +205,8 @@ const Calendar = () => {
 
   return (
     <div className="flex-1 flex flex-col h-full bg-surface relative z-10 shadow-[-10px_0_15px_-3px_rgba(0,0,0,0.03)] rounded-3xl overflow-hidden selection:bg-coral selection:text-white m-4">
-      <header className="flex justify-between items-center px-8 py-5 border-b border-glass-border/40 bg-surface/60 backdrop-blur-xl z-20 shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
-        <div className="flex items-center gap-6">
+      <header className="flex flex-col xl:flex-row justify-between items-start xl:items-center px-5 xl:px-5 md:px-8 py-5 gap-4 border-b border-glass-border/40 bg-surface/60 backdrop-blur-xl z-20 shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 w-full xl:w-auto">
           <h1 className="text-2xl font-bold text-navy tracking-tight min-w-[200px]">
             {getLabel()}
           </h1>
@@ -357,3 +357,8 @@ const Calendar = () => {
 };
 
 export default Calendar;
+
+
+
+
+

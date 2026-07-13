@@ -42,7 +42,7 @@ const Setting = () => {
 
   return (
     <>
-      <header className="flex justify-between items-center bg-surface/60 backdrop-blur-xl px-8 py-5 border-b border-glass-border/40 sticky top-0 z-[5] shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
+      <header className="flex justify-between items-center bg-surface/60 backdrop-blur-xl px-5 md:px-8 py-5 border-b border-glass-border/40 sticky top-0 z-[5] shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-gradient-to-br from-coral to-coral-hover rounded-xl shadow-sm text-white">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -52,12 +52,12 @@ const Setting = () => {
           </div>
           <h1 className="text-2xl font-extrabold text-navy tracking-tight">Settings</h1>
         </div>
-        <button className="bg-navy text-white text-sm font-bold px-6 py-3 rounded-xl hover:bg-coral hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
+        <button className="bg-brand-dark text-white text-sm font-bold px-6 py-3 rounded-xl hover:bg-coral hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
           Save Changes
         </button>
       </header>
 
-      <main className="p-8 space-y-6 flex-1 overflow-auto">
+      <main className="p-5 md:p-8 space-y-6 flex-1 overflow-auto">
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           <div className="xl:col-span-2 space-y-6">
             <section className="bg-surface/80 backdrop-blur-xl rounded-[1.5rem] border border-glass-border/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] hover:shadow-lg transition-shadow duration-300 p-8">
@@ -107,7 +107,7 @@ const Setting = () => {
               <h2 className="text-xl font-extrabold text-navy tracking-tight">Appearance</h2>
               <p className="text-sm font-medium text-navy/60 mt-1">Customize the interface theme.</p>
               
-              <div className="grid grid-cols-3 gap-4 mt-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
                 {[
                   { id: 'light', label: 'Light', icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg> },
                   { id: 'dark', label: 'Dark', icon: <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg> },
@@ -139,4 +139,9 @@ const Setting = () => {
 };
 
 export default Setting;
+
+
+
+
+
 

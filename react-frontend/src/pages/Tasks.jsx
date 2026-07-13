@@ -168,7 +168,7 @@ const Tasks = () => {
 
   return (
     <>
-      <header className="flex items-center justify-between bg-surface/60 backdrop-blur-xl px-8 py-5 border-b border-glass-border/40 sticky top-0 z-[5] shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
+      <header className="flex items-center justify-between bg-surface/60 backdrop-blur-xl px-5 md:px-8 py-5 border-b border-glass-border/40 sticky top-0 z-[5] shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-gradient-to-br from-coral to-coral-hover rounded-xl shadow-sm text-white">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -179,9 +179,9 @@ const Tasks = () => {
         </div>
       </header>
 
-      <main className="p-8 flex-1 overflow-auto">
+      <main className="p-5 md:p-8 flex-1 overflow-auto">
         {loading ? (
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map(i => (
               <div key={i} className="flex flex-col">
                 <div className="flex items-center gap-2 mb-4 px-1">
@@ -199,7 +199,7 @@ const Tasks = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-6 h-full">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
             {columns.map(col => (
               <div key={col.id} className="flex flex-col">
                 <div className="flex items-center gap-2 mb-4 px-1">
@@ -223,9 +223,9 @@ const Tasks = () => {
       </main>
 
       {showEditModal && (
-        <div className="fixed inset-0 bg-navy/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
           <div className="w-full max-w-md bg-surface/90 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-glass-border/50 overflow-hidden transform scale-100 transition-transform duration-300">
-            <div className="flex items-center justify-between px-8 py-5 bg-gradient-to-r from-skin/50 to-transparent border-b border-glass-border/40">
+            <div className="flex items-center justify-between px-5 md:px-8 py-5 bg-gradient-to-r from-skin/50 to-transparent border-b border-glass-border/40">
               <h3 className="text-xl font-extrabold text-navy tracking-tight">Edit Task</h3>
               <button onClick={() => setShowEditModal(false)} className="p-2 text-navy/50 hover:text-coral hover:bg-surface rounded-xl transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -246,7 +246,7 @@ const Tasks = () => {
               </div>
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-skin/50">
                 <button type="button" onClick={() => setShowEditModal(false)} className="px-5 py-2.5 rounded-xl bg-surface border border-skin text-sm font-bold text-navy/70 hover:bg-skin hover:text-navy transition-all shadow-sm">Cancel</button>
-                <button type="submit" className="px-5 py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-coral hover:shadow-lg hover:-translate-y-0.5 transition-all">Save Changes</button>
+                <button type="submit" className="px-5 py-2.5 rounded-xl bg-brand-dark text-white text-sm font-bold hover:bg-coral hover:shadow-lg hover:-translate-y-0.5 transition-all">Save Changes</button>
               </div>
             </form>
           </div>
@@ -257,4 +257,9 @@ const Tasks = () => {
 };
 
 export default Tasks;
+
+
+
+
+
 
