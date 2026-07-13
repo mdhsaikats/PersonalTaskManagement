@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Initialize theme based on localStorage and device preference
+      (function() {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (stored === 'dark' || (stored === 'system' && prefersDark) || (!stored && prefersDark)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              cream: 'rgb(var(--color-cream) / <alpha-value>)',
+              coral: 'rgb(var(--color-coral) / <alpha-value>)',
+              'coral-hover': 'rgb(var(--color-coral-hover) / <alpha-value>)',
+              navy: 'rgb(var(--color-navy) / <alpha-value>)',
+              skin: 'rgb(var(--color-skin) / <alpha-value>)',
+              surface: 'rgb(var(--color-surface) / <alpha-value>)',
+              'glass-border': 'rgb(var(--color-glass-border) / <alpha-value>)',
+              white: '#FFFFFF',
+            },
+            boxShadow: {
+              'glass': '0 8px 32px 0 rgba(var(--color-shadow-base) / 0.05)',
+              'glass-hover': '0 8px 32px 0 rgba(var(--color-shadow-base) / 0.15)',
+            }
+          }
+        }
+      }
+    </script>
+    <title>TaskMinder</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+      
+      :root {
+        --color-cream: 252 233 221;    /* #FCE9DD */
+        --color-skin: 251 234 220;     /* #FBEADC */
+        
+        --color-navy: 34 40 47;        /* #22282F */
+        
+        --color-coral: 244 81 95;      /* #F4515F */
+        --color-coral-hover: 239 78 92;
+        
+        /* Semantic Tokens */
+        --color-surface: 255 255 255;  /* White */
+        --color-glass-border: 255 255 255; /* White for light mode borders */
+        --color-shadow-base: 0 0 0;    /* Black for subtle shadow */
+      }
+      
+      .dark {
+        --color-cream: 13 17 23;       /* Premium Dark bg */
+        --color-skin: 22 27 34;        /* Slightly lighter dark bg */
+        
+        --color-navy: 230 237 243;     /* Crisp light text */
+        
+        --color-coral: 244 81 95;      /* Accents remain unchanged */
+        --color-coral-hover: 239 78 92;
+        
+        /* Semantic Tokens */
+        --color-surface: 33 38 45;     /* Card background in dark mode */
+        --color-glass-border: 85 95 110; /* Soft steel/gray border instead of glaring white */
+        --color-shadow-base: 0 0 0;    /* Keep black for shadows, opacity handles it */
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      
+      /* Ensure images don't look weird if they need specific backgrounds */
+      .dark img.logo {
+        filter: brightness(0.8);
+      }
+    </style>
+  </head>
+  <body class="bg-cream text-navy antialiased transition-colors duration-500">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

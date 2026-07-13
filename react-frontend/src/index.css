@@ -1,0 +1,22 @@
+/* Clean, modern scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--color-navy) / 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--color-navy) / 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(var(--color-navy) / 0.2);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--color-navy) / 0.4);
+}
